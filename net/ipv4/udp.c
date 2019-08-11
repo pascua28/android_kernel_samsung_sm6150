@@ -2268,7 +2268,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 
 		if (unlikely(rcu_dereference(sk->sk_rx_dst) != dst))
 			udp_sk_rx_dst_set(sk, dst);
-		
+#ifdef CONFIG_KNOX_NCM
 		/* START_OF_KNOX_NPA */
 		/* function to handle open flows with incoming udp packets */
 		if (check_ncm_flag()) {
@@ -2316,7 +2316,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 			}
 		}
 		/* END_OF_KNOX_NPA */
-
+#endif
 		ret = udp_unicast_rcv_skb(sk, skb, uh);
 		sock_put(sk);
 		return ret;
@@ -2357,7 +2357,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 		if (inet_get_convert_csum(sk) && uh->check && !IS_UDPLITE(sk))
 			skb_checksum_try_convert(skb, IPPROTO_UDP, uh->check,
 						 inet_compute_pseudo);
-
+#ifdef CONFIG_KNOX_NCM
 		/* START_OF_KNOX_NPA */
 		/* function to handle open flows with incoming udp packets */
 		if (check_ncm_flag()) {
@@ -2405,7 +2405,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 			}
 		}
 		/* END_OF_KNOX_NPA */
-		
+#endif
 		if (inet_get_convert_csum(sk) && uh->check && !IS_UDPLITE(sk))
 			skb_checksum_try_convert(skb, IPPROTO_UDP, uh->check,
 						 inet_compute_pseudo);
