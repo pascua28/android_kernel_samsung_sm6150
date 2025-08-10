@@ -194,6 +194,41 @@ SEC_M51_SWA_DTBO := \
                 sm7150-sec-m51-swa-overlay-r01.dtbo \
                 sm7150-sec-m51-swa-overlay-r02.dtbo 
 
+# R1Q(SM7150)
+SEC_R1Q_EUR_DTBO := \
+                sm7150-sec-r1q-eur-overlay-r00.dtbo \
+                sm7150-sec-r1q-eur-overlay-r01.dtbo \
+                sm7150-sec-r1q-eur-overlay-r02.dtbo \
+                sm7150-sec-r1q-eur-overlay-r03.dtbo \
+		sm7150-sec-r1q-eur-overlay-r04.dtbo \
+		sm7150-sec-r1q-eur-overlay-r05.dtbo \
+		sm7150-sec-r1q-eur-overlay-r06.dtbo \
+		sm7150-sec-r1q-eur-overlay-r07.dtbo \
+		sm7150-sec-r1q-eur-overlay-r08.dtbo
+
+SEC_R1Q_CHN_DTBO := \
+                sm7150-sec-r1q-chn-overlay-r00.dtbo \
+                sm7150-sec-r1q-chn-overlay-r01.dtbo \
+                sm7150-sec-r1q-chn-overlay-r02.dtbo \
+                sm7150-sec-r1q-chn-overlay-r03.dtbo \
+		sm7150-sec-r1q-chn-overlay-r04.dtbo \
+		sm7150-sec-r1q-chn-overlay-r05.dtbo \
+		sm7150-sec-r1q-chn-overlay-r06.dtbo \
+		sm7150-sec-r1q-chn-overlay-r07.dtbo \
+		sm7150-sec-r1q-chn-overlay-r08.dtbo
+
+SEC_R1Q_KOR_DTBO := \
+                sm7150-sec-r1q-kor-overlay-r00.dtbo \
+                sm7150-sec-r1q-kor-overlay-r01.dtbo \
+                sm7150-sec-r1q-kor-overlay-r02.dtbo \
+                sm7150-sec-r1q-kor-overlay-r03.dtbo \
+		sm7150-sec-r1q-kor-overlay-r04.dtbo \
+		sm7150-sec-r1q-kor-overlay-r05.dtbo \
+		sm7150-sec-r1q-kor-overlay-r06.dtbo \
+		sm7150-sec-r1q-kor-overlay-r07.dtbo \
+		sm7150-sec-r1q-kor-overlay-r08.dtbo \
+		sm7150-sec-r1q-kor-overlay-r09.dtbo
+
 define __sec_dtbo_build
 dtbo-$(2) += $(1)
 $(1)-base := $(3)
@@ -268,6 +303,21 @@ $(eval $(call sec_dtbo_build, \
 
 $(eval $(call sec_dtbo_build, \
 		$(SEC_M51_SWA_DTBO),$(CONFIG_SEC_M51_SWA_PROJECT),$(SEC_SM7150_BASE_DTB)))	
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_R1Q_EUR_DTBO),$(CONFIG_SEC_R1Q_EUR_PROJECT),$(SEC_SM7150_BASE_DTB)))
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_R1Q_EUR_DTBO),$(CONFIG_SEC_R1Q_EUR_LDU_PROJECT),$(SEC_SM7150_BASE_DTB)))
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_R1Q_CHN_DTBO),$(CONFIG_SEC_R1Q_CHN_PROJECT),$(SEC_SM7150_BASE_DTB)))
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_R1Q_CHN_DTBO),$(CONFIG_SEC_R1Q_CHN_LDU_PROJECT),$(SEC_SM7150_BASE_DTB)))
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_R1Q_KOR_DTBO),$(CONFIG_SEC_R1Q_KOR_PROJECT),$(SEC_SM7150_BASE_DTB)))
 
 endif
 
