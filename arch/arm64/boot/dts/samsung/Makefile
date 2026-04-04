@@ -181,6 +181,19 @@ SEC_A71_EUR_DTBO := \
 				sm7150-sec-a71-eur-overlay-r06.dtbo \
                 sm7150-sec-a71-eur-overlay-r07.dtbo
 
+# M51(SM7150)
+SEC_M51_EUR_DTBO := \
+                sm7150-sec-m51-eur-overlay-r00.dtbo \
+                sm7150-sec-m51-eur-overlay-r01.dtbo \
+                sm7150-sec-m51-eur-overlay-r02.dtbo \
+				sm7150-sec-m51-eur-overlay-r04.dtbo \
+                sm7150-sec-m51-eur-overlay-r05.dtbo
+
+SEC_M51_SWA_DTBO := \
+                sm7150-sec-m51-swa-overlay-r00.dtbo \
+                sm7150-sec-m51-swa-overlay-r01.dtbo \
+                sm7150-sec-m51-swa-overlay-r02.dtbo 
+
 define __sec_dtbo_build
 dtbo-$(2) += $(1)
 $(1)-base := $(3)
@@ -249,6 +262,12 @@ $(eval $(call sec_dtbo_build, \
 		
 $(eval $(call sec_dtbo_build, \
 		$(SEC_A71_EUR_DTBO),$(CONFIG_SEC_A71_EUR_PROJECT),$(SEC_SM7150_BASE_DTB)))
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_M51_EUR_DTBO),$(CONFIG_SEC_M51_EUR_PROJECT),$(SEC_SM7150_BASE_DTB)))
+
+$(eval $(call sec_dtbo_build, \
+		$(SEC_M51_SWA_DTBO),$(CONFIG_SEC_M51_SWA_PROJECT),$(SEC_SM7150_BASE_DTB)))	
 
 endif
 
