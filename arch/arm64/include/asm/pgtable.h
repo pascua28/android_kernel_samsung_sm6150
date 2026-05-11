@@ -459,9 +459,12 @@ static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
 	}
 #else
 	*pmdp = pmd;
+
+	if (pmd_valid(pmd)) {
+		dsb(ishst);
+		isb();
+	}
 #endif
-	dsb(ishst);
-	isb();
 }
 
 static inline void pmd_clear(pmd_t *pmdp)
@@ -530,9 +533,11 @@ static inline void set_pud(pud_t *pudp, pud_t pud)
 	}
 #else
 	*pudp = pud;
+	if (pud_valid(pud)) {
+		dsb(ishst);
+		isb();
+	}
 #endif
-	dsb(ishst);
-	isb();
 }
 
 static inline void pud_clear(pud_t *pudp)
