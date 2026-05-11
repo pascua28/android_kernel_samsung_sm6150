@@ -205,4 +205,6 @@ struct drm_mode_set *drm_client_find_modeset(struct drm_client_dev *client, stru
 
 int drm_client_debugfs_init(struct drm_minor *minor);
 
+int drm_client_debugfs_init(struct drm_minor *minor);
+
 #endif
