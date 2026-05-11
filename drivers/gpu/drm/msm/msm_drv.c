@@ -1742,6 +1742,13 @@ static int msm_release(struct inode *inode, struct file *filp)
 		kfree(node);
 	}
 
+	msm_preclose(dev, file_priv);
+
+       /**
+	* Handle preclose operation here for removing fb's whose
+	* refcount > 1. This operation is not triggered from upstream
+	* drm as msm_driver does not support DRIVER_LEGACY feature.
+	*/
 	ret = drm_release(inode, filp);
 	filp->private_data = NULL;
 end:
@@ -1912,7 +1919,6 @@ static struct drm_driver msm_driver = {
 				DRIVER_ATOMIC |
 				DRIVER_MODESET,
 	.open               = msm_open,
-	.preclose           = msm_preclose,
 	.postclose          = msm_postclose,
 	.lastclose          = msm_lastclose,
 	.irq_handler        = msm_irq,
@@ -2012,9 +2018,9 @@ static int msm_runtime_suspend(struct device *dev)
 	DBG("");
 
 	if (priv->mdss)
-		msm_mdss_disable(priv->mdss);
+		return msm_mdss_disable(priv->mdss);
 	else
-		sde_power_resource_enable(&priv->phandle,
+		return sde_power_resource_enable(&priv->phandle,
 				priv->pclient, false);
 
 	return 0;
@@ -2024,17 +2030,16 @@ static int msm_runtime_resume(struct device *dev)
 {
 	struct drm_device *ddev = dev_get_drvdata(dev);
 	struct msm_drm_private *priv = ddev->dev_private;
-	int ret;
 
 	DBG("");
 
 	if (priv->mdss)
-		ret = msm_mdss_enable(priv->mdss);
+		return msm_mdss_enable(priv->mdss);
 	else
-		ret = sde_power_resource_enable(&priv->phandle,
+		return sde_power_resource_enable(&priv->phandle,
 				priv->pclient, true);
 
-	return ret;
+	return 0;
 }
 #endif
 
