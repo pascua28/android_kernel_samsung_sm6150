@@ -45,7 +45,7 @@
 		mboxes = <&qmp_aop 0>;
 	};
 
-	aliases: aliases {
+	aliases {
 		serial0 = &qupv3_se8_2uart;
 		sdhc1 = &sdhc_1; /* eMMC */
 		sdhc2 = &sdhc_2; /* SD Card */
@@ -4287,7 +4287,7 @@
 
 &L4P {
 	regulator-min-microvolt = <2800000>;
-	regulator-max-microvolt = <2800000>;
+	regulator-max-microvolt = <3400000>;
 	qcom,min-dropout-voltage = <200000>;
 };
 
