@@ -1433,10 +1433,13 @@ static int __cam_req_mgr_create_subdevs(
  *
  */
 static void __cam_req_mgr_destroy_subdev(
-	struct cam_req_mgr_connected_device *l_device)
+	struct cam_req_mgr_connected_device **l_device)
 {
-	kfree(l_device);
-	l_device = NULL;
+	CAM_DBG(CAM_CRM, "*l_device %pK", *l_device);
+	if (*(l_device) != NULL) {
+		kfree(*(l_device));
+		*l_device = NULL;
+	}
 }
 
 /**
@@ -2570,7 +2573,7 @@ static int __cam_req_mgr_unlink(struct cam_req_mgr_core_link *link)
 	__cam_req_mgr_destroy_link_info(link);
 
 	/* Free memory holding data of linked devs */
-	__cam_req_mgr_destroy_subdev(link->l_dev);
+	__cam_req_mgr_destroy_subdev(&link->l_dev);
 
 	/* Destroy the link handle */
 	rc = cam_destroy_link_hdl(link->link_hdl);
@@ -2657,8 +2660,8 @@ int cam_req_mgr_link(struct cam_req_mgr_link_info *link_info)
 	mutex_lock(&g_crm_core_dev->crm_lock);
 
 	/* session hdl's priv data is cam session struct */
-	cam_session = cam_get_session_priv(
-		link_info->u.link_info_v1.session_hdl);
+	cam_session = (struct cam_req_mgr_core_session *)
+		cam_get_device_priv(link_info->session_hdl);
 	if (!cam_session) {
 		CAM_DBG(CAM_CRM, "NULL pointer");
 		mutex_unlock(&g_crm_core_dev->crm_lock);
@@ -2734,8 +2737,8 @@ int cam_req_mgr_link(struct cam_req_mgr_link_info *link_info)
 setup_failed:
 	__cam_req_mgr_destroy_subdev(&link->l_dev);
 create_subdev_failed:
-	cam_destroy_link_hdl(link->link_hdl);
-	link_info->u.link_info_v1.link_hdl = -1;
+	cam_destroy_device_hdl(link->link_hdl);
+	link_info->link_hdl = -1;
 link_hdl_fail:
 	mutex_unlock(&link->lock);
 	__cam_req_mgr_unreserve_link(cam_session, link);
@@ -2852,8 +2855,6 @@ link_hdl_fail:
 	return rc;
 }
 
-
->>>>>>> 92d36dad9e79afd6dfc8f6a3e5d44ab4ecc9e554
 int cam_req_mgr_unlink(struct cam_req_mgr_unlink_info *unlink_info)
 {
 	int                              rc = 0;

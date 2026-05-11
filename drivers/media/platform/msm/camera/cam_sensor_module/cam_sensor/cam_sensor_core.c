@@ -1,4 +1,5 @@
-/* Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -1104,55 +1105,6 @@ int32_t cam_sensor_driver_cmd(struct cam_sensor_ctrl_t *s_ctrl,
 			goto free_power_settings;
 		}
 
-#if defined(CONFIG_USE_CAMERA_HW_BIG_DATA)
-		sec_sensor_position = s_ctrl->id;
-#endif
-
-		if (cmd->handle_type ==
-			CAM_HANDLE_MEM_HANDLE) {
-			rc = cam_handle_mem_ptr(cmd->handle, s_ctrl);
-			if (rc < 0) {
-				CAM_ERR(CAM_SENSOR, "Get Buffer Handle Failed");
-				goto release_mutex;
-			}
-		} else {
-			CAM_ERR(CAM_SENSOR, "Invalid Command Type: %d",
-				 cmd->handle_type);
-			rc = -EINVAL;
-			goto release_mutex;
-		}
-
-		/* Parse and fill vreg params for powerup settings */
-		rc = msm_camera_fill_vreg_params(
-			&s_ctrl->soc_info,
-			s_ctrl->sensordata->power_info.power_setting,
-			s_ctrl->sensordata->power_info.power_setting_size);
-		if (rc < 0) {
-			CAM_ERR(CAM_SENSOR,
-				"Fail in filling vreg params for PUP rc %d",
-				 rc);
-			goto free_power_settings;
-		}
-
-		/* Parse and fill vreg params for powerdown settings*/
-		rc = msm_camera_fill_vreg_params(
-			&s_ctrl->soc_info,
-			s_ctrl->sensordata->power_info.power_down_setting,
-			s_ctrl->sensordata->power_info.power_down_setting_size);
-		if (rc < 0) {
-			CAM_ERR(CAM_SENSOR,
-				"Fail in filling vreg params for PDOWN rc %d",
-				 rc);
-			goto free_power_settings;
-		}
-
-		/* Power up and probe sensor */
-		rc = cam_sensor_power_up(s_ctrl);
-		if (rc < 0) {
-			CAM_ERR(CAM_SENSOR, "power up failed");
-			goto free_power_settings;
-		}
-
 #if defined(CONFIG_SEC_A71_PROJECT) || defined(CONFIG_SEC_A70S_PROJECT)
 		if (s_ctrl->soc_info.index == 0 &&
 			s_ctrl->sensordata->slave_info.sensor_id == SENSOR_ID_S5KGW1) { // check Rear GW1
@@ -1384,6 +1336,11 @@ int32_t cam_sensor_driver_cmd(struct cam_sensor_ctrl_t *s_ctrl,
 
 		sensor_acq_dev.device_handle =
 			cam_create_device_hdl(&bridge_params);
+		if (sensor_acq_dev.device_handle <= 0) {
+			rc = -EFAULT;
+			CAM_ERR(CAM_SENSOR, "Can not create device handle");
+			goto release_mutex;
+		}
 		s_ctrl->bridge_intf.device_hdl = sensor_acq_dev.device_handle;
 		s_ctrl->bridge_intf.session_hdl = sensor_acq_dev.session_handle;
 
