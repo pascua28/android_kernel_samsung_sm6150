@@ -17,6 +17,8 @@ struct drm_gem_object;
 struct drm_minor;
 struct module;
 
+#define DRM_CLIENT_MAX_CLONED_CONNECTORS	8
+
 /**
  * struct drm_client_funcs - DRM client callbacks
  */
@@ -186,6 +188,20 @@ void drm_bootsplash_client_register(struct drm_device *dev);
         drm_for_each_connector_iter(connector, iter) \
                 if ((connector->connector_type != DRM_MODE_CONNECTOR_WRITEBACK)\
 		&& (connector->connector_type != DRM_MODE_CONNECTOR_VIRTUAL))
+
+int drm_client_modeset_create(struct drm_client_dev *client);
+void drm_client_modeset_free(struct drm_client_dev *client);
+void drm_client_modeset_release(struct drm_client_dev *client);
+struct drm_mode_set *drm_client_find_modeset(struct drm_client_dev *client, struct drm_crtc *crtc);
+
+/**
+ * drm_client_for_each_modeset() - Iterate over client modesets
+ * @modeset: &drm_mode_set loop cursor
+ * @client: DRM client
+ */
+#define drm_client_for_each_modeset(modeset, client) \
+	for (({ lockdep_assert_held(&(client)->modeset_mutex); }), \
+	     modeset = (client)->modesets; modeset->crtc; modeset++)
 
 int drm_client_debugfs_init(struct drm_minor *minor);
 
