@@ -56,7 +56,11 @@ static int msm_get_read_mem_size
 		}
 		for (i = 0; i < eeprom_map->memory_map_size; i++) {
 			if (eeprom_map->mem_settings[i].i2c_operation ==
-				MSM_CAM_READ) {
+				MSM_CAM_READ ||
+				eeprom_map->mem_settings[i].i2c_operation ==
+				MSM_CAM_READ_CONTINUOUS ||
+				eeprom_map->mem_settings[i].i2c_operation ==
+				MSM_CAM_READ_PAGE) {
 				size += eeprom_map->mem_settings[i].reg_data;
 			}
 		}
